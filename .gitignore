@@ -1,0 +1,13 @@
+/dnc_set_env.m
+*.run_classifier.m.swp
+*.~
+*.m.swp
+dnc_*
+binica*
+/bias_after_adjust
+*.asv
+/html/
+/reports/
+/backup/
+run_cfg/
+env.json

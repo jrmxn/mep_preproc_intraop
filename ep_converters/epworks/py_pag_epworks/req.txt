@@ -1,0 +1,6 @@
+conda install pip
+conda install scikit-image
+conda install pandas
+conda install matplotlib
+conda install numpy
+pip install pyautogui

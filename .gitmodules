@@ -1,0 +1,6 @@
+[submodule "auxf/auxf_internal"]
+	path = auxf/auxf_internal
+	url = ../auxf_internal.git
+[submodule "auxf/auxf_external/files/matlab-toml"]
+	path = auxf/auxf_external/files/matlab-toml
+	url = ../matlab-toml.git
