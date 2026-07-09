@@ -230,7 +230,7 @@ for ix_cell_sub = 1:length(cell_participant)
     if v.apply_clustering
         % p_auxf = fullfile(getenv('D_PROC'), 'preproc_standard', participant, 'ephys', sprintf('%s_auxf.mat', participant));
         [info_trial_local.sc_cluster_fa, info_trial_local.sc_cluster_as] = ...
-            sp_cluster_stim(participant, v.participant_mapping, 'ephys_mode', 'research_scs');
+            sp.cluster_stim(participant, v.participant_mapping, 'ephys_mode', 'research_scs');
     end
     
     % avoid using this if you can - here for backward compat:
