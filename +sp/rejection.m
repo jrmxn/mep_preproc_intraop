@@ -278,6 +278,7 @@ while ix_outer <= length(cell_outer)
             if strcmpi(v.reject_mode, 'reject_lines')||strcmpi(v.reject_mode, 'plot_lines')
                 clear h_a;
                 h_a = subplot(n_rows, n_cols, find(A(:)));hold on;
+                h_a.UserData = struct('is_leftmost', mod(find(A(:)) - 1, n_cols) == 0);
                 p = h_a.Position;
                 p2 = [p(1)+p(3), p(2), 0.01, p(4)];
 
@@ -286,11 +287,18 @@ while ix_outer <= length(cell_outer)
                     plot(v.t_draw_line(ix_draw_line) * ones(1, 2), get(gca, 'ylim'), 'k--');
                 end
                 if strcmpi(v.reject_mode, 'reject_lines')
+                    p3 = [p(1)+p(3), p(2)+p(4)+0.005, 0.04, 0.025];
+                    hEdit = uicontrol(h_f, 'Style', 'edit', 'Units', 'normalized', 'Position', p3, ...
+                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)));
+
                     HSLIDER.(str_inner) = uicontrol( h_f, 'Style', 'slider', ...
                         'Units', 'normalized', 'Position', p2, 'Min', SLIDER_OPT.min, 'Max', SLIDER_OPT.max, ...
                         'SliderStep', SLIDER_OPT.step(y_ep), ...
-                        'Value', p_rej.(SLIDER_OPT.type), ...
-                        'Callback', @(src,evt) slider_callback_lines( src, h_a, y_ep, t, vec_a, title_, case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type));
+                        'Value', p_rej.(SLIDER_OPT.type));
+
+                    HSLIDER.(str_inner).Callback = @(src,evt) slider_callback_lines( src, hEdit, h_a, y_ep, t, vec_a, title_, case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type);
+                    hEdit.Callback = @(src,evt) edit_callback_lines( src, HSLIDER.(str_inner), h_a, y_ep, t, vec_a, title_, case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type);
+                    
                     %                     if not(v.outer_is_scloc),xlabel('');end
                     xlabel('');
                 end
@@ -298,16 +306,24 @@ while ix_outer <= length(cell_outer)
             elseif strcmpi(v.reject_mode, 'reject_heatmap')||strcmpi(v.reject_mode, 'plot_heatmap')
                 clear h_a;
                 h_a = subplot(n_rows, n_cols, find(A(:)));hold on;
+                h_a.UserData = struct('is_leftmost', mod(find(A(:)) - 1, n_cols) == 0);
                 p = h_a.Position;
                 p2 = [p(1)+p(3), p(2), 0.01, p(4)];
 
                 plot_heatmap(h_a, y_ep, t, vec_a, y_e_out, p_rej.(SLIDER_OPT.type), title_, v.sd_norm_plot, datetime_rec)
                 if strcmpi(v.reject_mode, 'reject_heatmap')
+                    p3 = [p(1)+p(3), p(2)+p(4)+0.005, 0.04, 0.025];
+                    hEdit = uicontrol(h_f, 'Style', 'edit', 'Units', 'normalized', 'Position', p3, ...
+                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)));
+
                     HSLIDER.(str_inner) = uicontrol( h_f, 'Style', 'slider', ...
                         'Units', 'normalized', 'Position', p2, 'Min', SLIDER_OPT.min, 'Max', SLIDER_OPT.max, ...
                         'SliderStep', SLIDER_OPT.step(y_ep), ...
-                        'Value', p_rej.(SLIDER_OPT.type), ...
-                        'Callback', @(src,evt) slider_callback_heatmap( src, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type));
+                        'Value', p_rej.(SLIDER_OPT.type));
+
+                    HSLIDER.(str_inner).Callback = @(src,evt) slider_callback_heatmap( src, hEdit, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type);
+                    hEdit.Callback = @(src,evt) edit_callback_heatmap( src, HSLIDER.(str_inner), h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, v.sd_norm_plot, datetime_rec, SLIDER_OPT.type);
+                    
                     %                     if not(v.outer_is_scloc),xlabel('');end
                     xlabel('');
                 end
@@ -403,8 +419,32 @@ end
 SLIDER_OPT.switch = true;
 end
 %%
-function slider_callback_lines( hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+function slider_callback_lines( hSlider, hEdit, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+hEdit.String = sprintf('%0.3f', hSlider.Value);
 
+if isempty(hSlider.UserData) || ~isvalid(hSlider.UserData)
+    hSlider.UserData = timer('ExecutionMode', 'singleShot', 'StartDelay', 0.25);
+    hSlider.DeleteFcn = @(src, ~) delete_slider_timer(src);
+end
+t_obj = hSlider.UserData;
+if strcmp(t_obj.Running, 'on')
+    stop(t_obj);
+end
+t_obj.TimerFcn = @(~,~) delayed_update_lines(hSlider, h_a, y_ep, t, vec_a, title_, case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type);
+start(t_obj);
+end
+
+function delete_slider_timer(hSlider)
+    if ~isempty(hSlider.UserData) && isvalid(hSlider.UserData)
+        stop(hSlider.UserData);
+        delete(hSlider.UserData);
+    end
+end
+
+function delayed_update_lines(hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+if ~isvalid(hSlider) || ~isvalid(h_a)
+    return;
+end
 p_rej.(slider_type) = hSlider.Value;
 y_e_out = false(size(y_ep, 1), 1);
 y_e_out = reject_corrupted(y_e_out, stim_corrupted);
@@ -413,14 +453,51 @@ y_e_out = reject_auc(y_e_out, y_ep, t, case_t, p_rej.log10_auc_valid_lower, p_re
 plot_lines(h_a, y_ep, t, vec_a, y_e_out, p_rej.(slider_type), title_, sd_norm_plot, datetime_rec);
 end
 
-function slider_callback_heatmap( hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+function edit_callback_lines( hEdit, hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+val = str2double(hEdit.String);
+if isnan(val) || val < hSlider.Min || val > hSlider.Max
+    hEdit.String = sprintf('%0.3f', hSlider.Value);
+    return;
+end
+hSlider.Value = val;
+slider_callback_lines( hSlider, hEdit, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type);
+end
 
+function slider_callback_heatmap( hSlider, hEdit, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+hEdit.String = sprintf('%0.3f', hSlider.Value);
+
+if isempty(hSlider.UserData) || ~isvalid(hSlider.UserData)
+    hSlider.UserData = timer('ExecutionMode', 'singleShot', 'StartDelay', 0.25);
+    hSlider.DeleteFcn = @(src, ~) delete_slider_timer(src);
+end
+t_obj = hSlider.UserData;
+if strcmp(t_obj.Running, 'on')
+    stop(t_obj);
+end
+t_obj.TimerFcn = @(~,~) delayed_update_heatmap(hSlider, h_a, y_ep, t, vec_a, title_, case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type);
+start(t_obj);
+end
+
+function delayed_update_heatmap(hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+if ~isvalid(hSlider) || ~isvalid(h_a)
+    return;
+end
 p_rej.(slider_type) = hSlider.Value;
 y_e_out = false(size(y_ep, 1), 1);
 y_e_out = reject_corrupted(y_e_out, stim_corrupted);
 y_e_out = reject_pca(y_e_out, y_ep, t, case_t, p_rej.auc_th, p_rej.pc_max, p_rej.fraction_pc_error, p_rej.w_edge);
 y_e_out = reject_auc(y_e_out, y_ep, t, case_t, p_rej.log10_auc_valid_lower, p_rej.log10_auc_valid_upper);
 plot_heatmap(h_a, y_ep, t, vec_a, y_e_out, p_rej.(slider_type), title_, sd_norm_plot, datetime_rec)
+end
+
+function edit_callback_heatmap( hEdit, hSlider, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type)
+val = str2double(hEdit.String);
+if isnan(val) || val < hSlider.Min || val > hSlider.Max
+    hEdit.String = sprintf('%0.3f', hSlider.Value);
+    return;
+end
+hSlider.Value = val;
+slider_callback_heatmap( hSlider, hEdit, h_a, y_ep, t, vec_a, title_ , case_t, stim_corrupted, p_rej, sd_norm_plot, datetime_rec, slider_type);
 end
 
 function y_e_out = reject_corrupted(y_e_out, stim_corrupted)
@@ -431,6 +508,10 @@ y_e_out = or(y_e_out, stim_corrupted);
 end
 
 function plot_lines(h_a, y, t, vec_a, y_e_out, slider_val, title_, sd_norm_plot, datetime_rec)
+is_leftmost = true;
+if isstruct(h_a.UserData) && isfield(h_a.UserData, 'is_leftmost')
+    is_leftmost = h_a.UserData.is_leftmost;
+end
 vec_a_mod = vec_a;
 n_cmap = 256;
 cmap = parula(n_cmap);cmap = flipud(cmap);
@@ -480,10 +561,12 @@ if not(isempty(y_temp))
 end
 ylim_ = get(gca, 'ylim');
 xlabel('Time (s)');
-if sd_norm_plot
-    ylabel('EP (Arb.)');
-else
-    ylabel('EP (\muV)');
+if is_leftmost
+    if sd_norm_plot
+        ylabel('EP (Arb.)');
+    else
+        ylabel('EP (\muV)');
+    end
 end
 % c = colorbar;
 % try
@@ -501,7 +584,7 @@ set(gca,'Clim',[amp_lower amp_upper])
 %     keyboard
 % end
 xlim([t(1), t(end)]);
-c = colorbar;
+% c = colorbar;
 % ax_hidden = axes('Parent', h_a);
 
 x_patch = [t(1), t(end), t(end), t(1)];
@@ -512,11 +595,15 @@ set(h_p, 'FaceAlpha', 0.01, 'FaceColor', 0.01 * [1, 1, 1]);
 plot_heatmap_local = @(src, callbackdata) plot_heatmap(h_a, y, t, vec_a, y_e_out, slider_val, title_, sd_norm_plot, datetime_rec);
 set(h_p,'ButtonDownFcn', @(src, callbackdata) plot_heatmap_local(src, callbackdata))
 
-title_ = sprintf('%s, %0.3f', title_, slider_val);
 title(title_);
+set(h_a, 'FontSize', 8);
 end
 
 function plot_heatmap(h_a, y, t, vec_a, y_e_out, slider_val, title_, sd_norm_plot, datetime_rec)
+is_leftmost = true;
+if isstruct(h_a.UserData) && isfield(h_a.UserData, 'is_leftmost')
+    is_leftmost = h_a.UserData.is_leftmost;
+end
 axes(h_a);
 n_cmap = 256;
 cmap = viridis(n_cmap);cmap = flipud(cmap);
@@ -531,7 +618,7 @@ end
 imagesc(t, 1:size(y_mod, 1), y_mod);
 axis tight;
 set(gca,'Clim', [nanmin(y_mod(:)), nanmax(y_mod(:))])
-colorbar;
+% colorbar;
 hold on;
 %                         xx = x * t(end) / x(end);
 %                         plot(xx, x_e_prog, 'r.');
@@ -547,7 +634,6 @@ plot_lines_local = @(src, callbackdata) plot_lines(h_a, y, t, vec_a, y_e_out, sl
 ix_im = strcmpi(arrayfun(@(ix)  h_a.Children(ix).Type, 1:length(h_a.Children), 'UniformOutput', false), 'image');
 set(h_a.Children(ix_im),'ButtonDownFcn', @(src, callbackdata) plot_lines_local(src, callbackdata));
 
-title_ = sprintf('%s, %0.3f', title_, slider_val);
 title(title_);
 
 datetime_rec.Format = 'HH:mm:ss';
@@ -567,7 +653,10 @@ for ix_time = vec_ix_time
 end
 
 xlabel('Time (s)');
-ylabel('Index');
+if is_leftmost
+    ylabel('Index');
+end
+set(h_a, 'FontSize', 8);
 
 end
 
