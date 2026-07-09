@@ -573,33 +573,49 @@ end
 
 function close_figure(src, callbackdata, sub, cell_ch, cell_pos)
 % Close request function
-global REJ_STRUCT;
-global HSLIDER;
-global SLIDER_OPT;
-assert(xor(iscell(cell_ch), iscell(cell_pos)), 'One of these inputs should be a cell.');
-if not(iscell(cell_ch))
-    str_ch = cell_ch;
-    for ix_pos = 1:length(cell_pos)
-        if isfield(HSLIDER, cell_pos{ix_pos})
-            h = HSLIDER.(cell_pos{ix_pos});
-            if isvalid(h)
-                REJ_STRUCT.(sub).(str_ch).(cell_pos{ix_pos}).(SLIDER_OPT.type) = h.Value;
+try
+    global REJ_STRUCT;
+    global HSLIDER;
+    global SLIDER_OPT;
+    assert(xor(iscell(cell_ch), iscell(cell_pos)), 'One of these inputs should be a cell.');
+    sub_safe = matlab.lang.makeValidName(sub);
+    opt_safe = matlab.lang.makeValidName(SLIDER_OPT.type);
+    if not(iscell(cell_ch))
+        ch_safe = matlab.lang.makeValidName(cell_ch);
+        for ix_pos = 1:length(cell_pos)
+            if isfield(HSLIDER, cell_pos{ix_pos})
+                h = HSLIDER.(cell_pos{ix_pos});
+                if isvalid(h)
+                    pos_safe = matlab.lang.makeValidName(cell_pos{ix_pos});
+                    REJ_STRUCT.(sub_safe).(ch_safe).(pos_safe).(opt_safe) = h.Value;
+                end
+            end
+        end
+    elseif not(iscell(cell_pos))
+        pos_safe = matlab.lang.makeValidName(cell_pos);
+        for ix_ch = 1:length(cell_ch)
+            if isfield(HSLIDER, cell_ch{ix_ch})
+                h = HSLIDER.(cell_ch{ix_ch});
+                if isvalid(h)
+                    ch_safe = matlab.lang.makeValidName(cell_ch{ix_ch});
+                    REJ_STRUCT.(sub_safe).(ch_safe).(pos_safe).(opt_safe) = h.Value;
+                end
             end
         end
     end
-elseif not(iscell(cell_pos))
-    str_pos = cell_pos;
-    for ix_ch = 1:length(cell_ch)
-        if isfield(HSLIDER, cell_ch{ix_ch})
-            h = HSLIDER.(cell_ch{ix_ch});
-            if isvalid(h)
-                REJ_STRUCT.(sub).(cell_ch{ix_ch}).(str_pos).(SLIDER_OPT.type) = h.Value;
-            end
-        end
-    end
+catch ME
+    warning('Error in close_figure: %s', ME.message);
 end
 
-delete(gcf);
+if isempty(src)
+    return;
+end
+
+try
+    delete(src);
+catch
+    delete(gcf);
+end
 return
 end
 

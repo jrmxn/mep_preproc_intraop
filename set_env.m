@@ -29,7 +29,7 @@ if isfile(env_file)
     str = char(raw');
     fclose(fid);
     env_data = jsondecode(str);
-    
+
     fields = fieldnames(env_data);
     for i = 1:numel(fields)
         setenv(fields{i}, env_data.(fields{i}));
@@ -41,6 +41,10 @@ end
 %%
 if ~isempty(getenv('D_GIT'))
     addpath(genpath(fullfile(getenv('D_GIT'), 'auxf')));
+    path_inside = fullfile(getenv('D_GIT'), 'mep_preproc_intraop');  % if preproc is being used inside another repo
+    if (exist(path_inside, "dir") == 7)
+        addpath(genpath(fullfile(path_inside, 'auxf')));
+    end
 end
 
 %%
