@@ -40,7 +40,7 @@ cdp_set = ["D-Rost"; "D-Caud"];
 channel_set = [muscle_set; eeg_set; cdp_set];
 channel_type = [repmat("EMG", size(muscle_set)); repmat("EEG", size(eeg_set)); repmat("CDP", size(cdp_set))];
 
-proto_muscle_ignore_set = ["EHL", "Quad", "VL"];
+proto_muscle_ignore_set = ["EHL", "Quad", "VL", "Psoas"];
 muscle_ignore_set = ["L" + proto_muscle_ignore_set, "R" + proto_muscle_ignore_set].';
 muscle_ignore_set = [muscle_ignore_set; "Test1-Test2"];
 eeg_ignore_set = [];
@@ -105,9 +105,9 @@ for ix_cell_sub = 1:length(cell_participant)
                         keyboard;
                     end
                     info_flat.fs(ix_row) = ep_fs_proto;
-                    %                     if length(trial.vec_channel) > 18
-                    %                         keyboard;
-                    %                     end
+%                     if any(trial.vec_channel == "LPsoas")
+%     keyboard
+% end
                     [trial, did_verbose] = adjust_channels(trial, channel_set, channel_ignore_set, did_verbose, participant, v, hash);
 
                     ephys.trials_flat{ix_row} = trial;
