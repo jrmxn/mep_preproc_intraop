@@ -83,7 +83,7 @@ for ix_group = 1:numel(u_vec_group)
                 end
                 t_ = t(idx_new);
                 if isempty(data) | isempty(merged_t{ix_trace})
-                    fprintf('Some tracedata in freuqency stim is empty - not sure if I am handling it correctly.\n');
+                    fprintf('Some tracedata in frequency stim is empty - not sure if I am handling it correctly.\n');
                     data_ = nan(1, sum(idx_new));
                 else
                     data_ = data(:, idx_new);
@@ -113,9 +113,14 @@ for ix_group = 1:numel(u_vec_group)
         warning(ME.identifier, '%s', ME.message);
         num_failures = num_failures + 1;
     end
-
+    merged_t_ = merged_t;
     merged_t = merged_t(1, :);
-    if any(isnan(merged_t)), error('Adapt code to pick a row without nans');end
+    if any(isnan(merged_t)),
+        ix = find(not(any(isnan(merged_t_), 2)), 1, 'first');
+            merged_t = merged_t_(ix, :);
+        % keyboard;
+        % error('Adapt code to pick a row without nans');
+    end
 
     nan_rows = all(not(isfinite(merged_data)), 2);
     merged_data(nan_rows, :) = 1;
