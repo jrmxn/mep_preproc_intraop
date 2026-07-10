@@ -353,7 +353,7 @@ for ix_cell_sub = 1:length(vec_participant)
         vec_cluster_u = unique(T_local.(str_cluster_field));
         vec_cluster_u = vec_cluster_u(isfinite(vec_cluster_u));
 
-        cmap_cluster = viridis(length(vec_cluster_u));
+        cmap_cluster = parula(length(vec_cluster_u));
         rng(v.seed.(participant));
         cmap_cluster = cmap_cluster(randperm(length(vec_cluster_u)), :);  % make it a bit easier to distinguish
 
