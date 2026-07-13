@@ -714,7 +714,7 @@ elseif strcmpi(v.operation, 'augment')
                 % research_multipulse. In the IOMAX this mode was treated
                 % as multiple stimuli with individual pulses, but in previous systems it was
                 % treated as a single stimuli was multiple pulses
-                if str_mode_out == "research_multipulse"
+                if (str_mode_out == "research_multipulse") || (str_mode_out == "research_multipulse_brain")
                     ephys_info_mode.sc_count(ix_trial) = n_stimuli;
                     sc_displacement = ephys_mode.Trials{ix_trial}.Stimuli.DiscreteStimuli{ix_exemplar_pulse + 1}.Displacement;
                     sc_frequency = 1/sc_displacement;
