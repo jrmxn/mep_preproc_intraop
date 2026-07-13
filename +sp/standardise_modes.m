@@ -51,7 +51,7 @@ d_standardised = fullfile(getenv('D_PROC'), 'preproc_standard');
 vec_mode = ["research_scs", "research_multipulse", "research_doublepulse", ...
     "research_paired_averaged", "research_paired_repeat", "research_mep", "research_dwave", "eeg", ...
     "clinical_mep", "research_peripheral", "research_lcswap", "research_scs_pairs", ...
-    "research_scs_train", "research_paired_train"];
+    "research_scs_train", "research_multipulse_brain"];
 
 ep_delay_proto = -0.03;
 ep_fs_proto = 6000;
@@ -111,7 +111,7 @@ for ix_cell_sub = 1:length(cell_participant)
 
                 info_flat.Properties.UserData.(mode).t = t_proto;
                 info_flat.Properties.UserData.(mode).fs = ep_fs_proto;
-            elseif (mode == "research_multipulse") || (mode == "research_doublepulse")
+            elseif (mode == "research_multipulse") || (mode == "research_doublepulse") || (mode == "research_multipulse_brain")
                 latch_trial = true;
                 for ix_row = 1:length(ephys.trials_flat(:))
                     if not(info_flat.mode(ix_row) == mode), continue;end

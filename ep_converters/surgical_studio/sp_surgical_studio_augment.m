@@ -119,8 +119,8 @@ elseif strcmpi(v.operation, 'augment')
         %% Mode reassign exception
         if isfield(exceptions, 'mode_reassign')
             vec_mode_ = string(arrayfun(@(ix) ephys_in.Modes{ix}.Name, [1:length(ephys_in.Modes)], 'UniformOutput', false));
-            if exceptions.mode_reassign.delete_original_to
-                str_mode_in = string(exceptions.mode_reassign.to);
+            if isfield(exceptions.mode_reassign, 'delete_original')
+                str_mode_in = string(exceptions.mode_reassign.delete_original);
                 case_mode = str_mode_in == vec_mode_;
                 ephys_in.Modes(case_mode) = [];
                 vec_mode_ = string(arrayfun(@(ix) ephys_in.Modes{ix}.Name, [1:length(ephys_in.Modes)], 'UniformOutput', false));
@@ -162,7 +162,7 @@ elseif strcmpi(v.operation, 'augment')
             vec_mode == "Research SCS Train"| ...
             vec_mode == "Research PE Right"| ...
             vec_mode == "Research PE Left"| ...
-            vec_mode == "Research Paired Train"| ...
+            vec_mode == "Research HD Brain"| ...
             false;
         %         vec_mode == "Research PProbe"| ...  % need to deal with this
         %         differently since recording is for longer time.
@@ -229,8 +229,8 @@ elseif strcmpi(v.operation, 'augment')
                 str_mode_out = "research_peripheral";
             elseif str_mode_in == "Research PE Right"
                 str_mode_out = "research_peripheral";
-            elseif str_mode_in == "Research Paired Train"
-                str_mode_out = "research_paired_train";
+            elseif str_mode_in == "Research HD Brain"
+                str_mode_out = "research_multipulse_brain";
             else
                 str_mode_out = strrep(lower(strrep(str_mode_in, '-', '')), ' ', '_');
             end
