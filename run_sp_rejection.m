@@ -23,7 +23,8 @@ rejection_summary = false;
 if not(rejection_summary)
     for ix_vec_ephys_mode = 1:length(vec_ephys_mode)
         ephys_mode = vec_ephys_mode(ix_vec_ephys_mode);
-
+        disp(ephys_mode);
+        
         %% only run on specific subjects:
         reject_mode = 'reject_lines';
         if any(strcmpi(config_struct.reject_mode, reject_mode))

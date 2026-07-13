@@ -115,6 +115,32 @@ elseif strcmpi(v.operation, 'augment')
         if not(any(strcmpi(ephys_events.Properties.VariableNames, 'stim_sc_depth')))
             ephys_events.stim_sc_depth(:) = "epidural";
         end
+
+        %% Mode reassign exception
+        if isfield(exceptions, 'mode_reassign')
+            vec_mode_ = string(arrayfun(@(ix) ephys_in.Modes{ix}.Name, [1:length(ephys_in.Modes)], 'UniformOutput', false));
+            if isfield(exceptions.mode_reassign, 'delete_original')
+                str_mode_in = string(exceptions.mode_reassign.delete_original);
+                case_mode = str_mode_in == vec_mode_;
+                ephys_in.Modes(case_mode) = [];
+                vec_mode_ = string(arrayfun(@(ix) ephys_in.Modes{ix}.Name, [1:length(ephys_in.Modes)], 'UniformOutput', false));
+            end
+            str_mode_in = string(exceptions.mode_reassign.from);
+            case_mode = str_mode_in == vec_mode_;
+            ephys_mode = ephys_in.Modes{case_mode};
+            vec_reassign = false(length(ephys_mode.Trials), 1);
+            for ix_trial = 1:length(ephys_mode.Trials)
+                stimuli = arrayfun(@(ix) ephys_mode.Trials{ix_trial}.Stimuli.DiscreteStimuli{ix}.Name,1:length(ephys_mode.Trials{ix_trial}.Stimuli.DiscreteStimuli),'UniformOutput',false);
+                if any(string(stimuli) == exceptions.mode_reassign.if_contains_stimuli)
+                    vec_reassign(ix_trial) = true;
+                end
+            end
+            ephys_in.Modes{end+1} = ephys_mode;
+            ephys_in.Modes{end}.Trials = ephys_in.Modes{end}.Trials(vec_reassign);
+            ephys_in.Modes{end}.Name = exceptions.mode_reassign.to;
+            ephys_in.Modes{case_mode}.Trials = ephys_in.Modes{case_mode}.Trials(not(vec_reassign));
+        end
+
         %%
         vec_mode = string(arrayfun(@(ix) ephys_in.Modes{ix}.Name, [1:length(ephys_in.Modes)], 'UniformOutput', false));
         subselect_modes = ...
@@ -136,6 +162,7 @@ elseif strcmpi(v.operation, 'augment')
             vec_mode == "Research SCS Train"| ...
             vec_mode == "Research PE Right"| ...
             vec_mode == "Research PE Left"| ...
+            vec_mode == "Research HD Brain"| ...
             false;
         %         vec_mode == "Research PProbe"| ...  % need to deal with this
         %         differently since recording is for longer time.
@@ -150,6 +177,7 @@ elseif strcmpi(v.operation, 'augment')
                 false;
         end
 
+        %%
         vec_mode_select = vec_mode(subselect_modes);  % temporary!
         % need to exclude if mode is empty here!
         mode_is_empty = false(1, length(vec_mode_select));
@@ -201,6 +229,8 @@ elseif strcmpi(v.operation, 'augment')
                 str_mode_out = "research_peripheral";
             elseif str_mode_in == "Research PE Right"
                 str_mode_out = "research_peripheral";
+            elseif str_mode_in == "Research HD Brain"
+                str_mode_out = "research_multipulse_brain";
             else
                 str_mode_out = strrep(lower(strrep(str_mode_in, '-', '')), ' ', '_');
             end
@@ -684,7 +714,7 @@ elseif strcmpi(v.operation, 'augment')
                 % research_multipulse. In the IOMAX this mode was treated
                 % as multiple stimuli with individual pulses, but in previous systems it was
                 % treated as a single stimuli was multiple pulses
-                if str_mode_out == "research_multipulse"
+                if (str_mode_out == "research_multipulse") || (str_mode_out == "research_multipulse_brain")
                     ephys_info_mode.sc_count(ix_trial) = n_stimuli;
                     sc_displacement = ephys_mode.Trials{ix_trial}.Stimuli.DiscreteStimuli{ix_exemplar_pulse + 1}.Displacement;
                     sc_frequency = 1/sc_displacement;
@@ -971,6 +1001,7 @@ elseif strcmpi(v.operation, 'augment')
 
         %%
         % now save as json
+        disp(p_out_ephys_data);
         savejson('Cases', {ephys_out}, char(p_out_ephys_data));  %  surgical studio format
         save(p_out_ephys_info, 'ephys_info');  % helper table for eeglab format
     end

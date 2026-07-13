@@ -40,7 +40,7 @@ cdp_set = ["D-Rost"; "D-Caud"];
 channel_set = [muscle_set; eeg_set; cdp_set];
 channel_type = [repmat("EMG", size(muscle_set)); repmat("EEG", size(eeg_set)); repmat("CDP", size(cdp_set))];
 
-proto_muscle_ignore_set = ["EHL", "Quad", "VL"];
+proto_muscle_ignore_set = ["EHL", "Quad", "VL", "Psoas"];
 muscle_ignore_set = ["L" + proto_muscle_ignore_set, "R" + proto_muscle_ignore_set].';
 muscle_ignore_set = [muscle_ignore_set; "Test1-Test2"];
 eeg_ignore_set = [];
@@ -51,11 +51,7 @@ d_standardised = fullfile(getenv('D_PROC'), 'preproc_standard');
 vec_mode = ["research_scs", "research_multipulse", "research_doublepulse", ...
     "research_paired_averaged", "research_paired_repeat", "research_mep", "research_dwave", "eeg", ...
     "clinical_mep", "research_peripheral", "research_lcswap", "research_scs_pairs", ...
-    "research_scs_train"];
-% need to add "research_dwave" and "research_mep" and "research_peripheral"
-% need to consider how to treate researc_multipulse vs scs vs mep - i.e....
-% they are just the same thing but with 0 cxs/ 0scs
-
+    "research_scs_train", "research_multipulse_brain"];
 
 ep_delay_proto = -0.03;
 ep_fs_proto = 6000;
@@ -105,9 +101,9 @@ for ix_cell_sub = 1:length(cell_participant)
                         keyboard;
                     end
                     info_flat.fs(ix_row) = ep_fs_proto;
-                    %                     if length(trial.vec_channel) > 18
-                    %                         keyboard;
-                    %                     end
+%                     if any(trial.vec_channel == "LPsoas")
+%     keyboard
+% end
                     [trial, did_verbose] = adjust_channels(trial, channel_set, channel_ignore_set, did_verbose, participant, v, hash);
 
                     ephys.trials_flat{ix_row} = trial;
@@ -115,7 +111,7 @@ for ix_cell_sub = 1:length(cell_participant)
 
                 info_flat.Properties.UserData.(mode).t = t_proto;
                 info_flat.Properties.UserData.(mode).fs = ep_fs_proto;
-            elseif (mode == "research_multipulse") || (mode == "research_doublepulse")
+            elseif (mode == "research_multipulse") || (mode == "research_doublepulse") || (mode == "research_multipulse_brain")
                 latch_trial = true;
                 for ix_row = 1:length(ephys.trials_flat(:))
                     if not(info_flat.mode(ix_row) == mode), continue;end
@@ -135,8 +131,11 @@ for ix_cell_sub = 1:length(cell_participant)
                     ephys.trials_flat{ix_row} = trial;
 
                     ds = [trial.Stimuli.DiscreteStimuli{:}];
-                    ds_current = [ds.SensedCurrent];
-
+                    if isfield(ds, 'SensedCurrent')
+                        ds_current = [ds.SensedCurrent];
+                    else
+                        ds_current = arrayfun(@(i) ds(i).ElectricalPulses{1}.Intensity, 1:length(ds));
+                    end
                     ds_current_average = mean(ds_current(ds_current > 1e-4));
                     info_flat.sc_current(ix_row) = ds_current_average;
                 end
