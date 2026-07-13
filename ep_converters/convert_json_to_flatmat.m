@@ -181,6 +181,7 @@ for ix_cell_dir_sub = 1:length(cell_sub)
                 end
             end
             %%
+            disp(p_info_out);
             save(p_phys_out, '-struct', 'ephys');
             save(p_info_out, 'info_flat');
             %%

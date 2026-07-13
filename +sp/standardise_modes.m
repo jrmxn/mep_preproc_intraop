@@ -51,11 +51,7 @@ d_standardised = fullfile(getenv('D_PROC'), 'preproc_standard');
 vec_mode = ["research_scs", "research_multipulse", "research_doublepulse", ...
     "research_paired_averaged", "research_paired_repeat", "research_mep", "research_dwave", "eeg", ...
     "clinical_mep", "research_peripheral", "research_lcswap", "research_scs_pairs", ...
-    "research_scs_train"];
-% need to add "research_dwave" and "research_mep" and "research_peripheral"
-% need to consider how to treate researc_multipulse vs scs vs mep - i.e....
-% they are just the same thing but with 0 cxs/ 0scs
-
+    "research_scs_train", "research_paired_train"];
 
 ep_delay_proto = -0.03;
 ep_fs_proto = 6000;
@@ -135,8 +131,11 @@ for ix_cell_sub = 1:length(cell_participant)
                     ephys.trials_flat{ix_row} = trial;
 
                     ds = [trial.Stimuli.DiscreteStimuli{:}];
-                    ds_current = [ds.SensedCurrent];
-
+                    if isfield(ds, 'SensedCurrent')
+                        ds_current = [ds.SensedCurrent];
+                    else
+                        ds_current = arrayfun(@(i) ds(i).ElectricalPulses{1}.Intensity, 1:length(ds));
+                    end
                     ds_current_average = mean(ds_current(ds_current > 1e-4));
                     info_flat.sc_current(ix_row) = ds_current_average;
                 end
