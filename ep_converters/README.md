@@ -49,7 +49,7 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 7. In File Explorer, navigate to: `your_exported_data_directory > scapptio113 > ephys > cadwell-iomax`.
 8. The excel file `scapptio113_events_write` will populate here. Rename it to `scapptio113_events_augment`. This is what MATLAB will load back in.
 9. Open `scapptio113_events_augment` (it is an Excel file you will edit).
-10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Annotate the Excel file using the template. The template is structured such that the first column contains a description of a label that can be added to the spreadsheet. The subsequent columns correspond to the content that you should add in the respective columns of your augmented CSV/Excel file.
+10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Refer to the **Events Augmentation Guidelines** section below for details on exactly what information to add to the respective columns of the spreadsheet based on the experimental condition.
 11. (Optional) Create, edit, or delete the exceptions file (`scapptio113_exceptions.json`) in the same folder if any mode reassignments are necessary. See the [Exception Files](#exception-files) section below for formatting details.
 12. Change your configuration JSON to use the `"augment"` operation and save:
 
@@ -78,6 +78,27 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 14. Add the participant to the study list as directed (e.g., `scap 113 = 74`).
 15. Check the README.md one level up once the participant has been added to the study list.
 
+
+## Events Augmentation Guidelines
+
+When editing the `[participant]_events_augment.xlsx` file in step 10, fill in specific columns based on the type of data or experimental condition. The table below outlines the types of conditions (Description) and what you should put into the corresponding columns (`set_sequence`, `set_group`, `cx_pct`, `sc_pct`, `moi`, and `muscle_targeted`). 
+
+*Note: If `cx_pct` (cortical percentage) or `sc_pct` (spinal cord percentage) are unknown for a given row, you can set them to `-1`.*
+
+| Description | `set_sequence` | `set_group` | `cx_pct` | `sc_pct` | `moi` | `muscle_targeted` |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Standard paired average** | `pa-001` | `Gpa-001` | `110` | `110` | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `ECR` |
+| **Pairing** | | | (use `-1` if unknown) | (use `-1` if unknown) | | |
+| **Ramp** | `scap_pre-001` | `gscap-001` | `110` | `90` | | |
+| **Multipulse** | `scap-001` | | (or `-1` if sub-cx) | (or `110`, `-1`, etc.) | | |
+| **Peripheral pairing average to median** | `scap_post-001` | | | | | |
+| **To ulnar** | `cxramp-001` | `gcxramp-001` | `-1` | `110` | | |
+| **Peripheral (for CDMRP)** | | (if ramping brain) | | | | |
+| **Probe** | `e.g. M04N` | | | | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `APB` |
+| **Spatial CDMRP condition** | `e.g. M04N` | `spatial` | | | | |
+| **Frequency CDMRP condition** | `pma-001` or `e.g. B03F01` | `gpma-001` or `frequency` | `110` | `90` | | |
+| **Pulsewidth CDMRP condition** | `pmu-001` or `e.g. B03PW01` | `pulsewidth` | | | | |
+| **X-Ray** | | `xray` | | | | |
 
 ## Exception Files
 

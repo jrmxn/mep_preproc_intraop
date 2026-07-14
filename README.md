@@ -33,7 +33,7 @@
 
 ## Directory Structure
 
-* `ep_converters/`: Contains subdirectories and scripts for converting data from various IOM formats (Surgical Studio, Cascade EDFs, EPWorks) into the foundational JSON structure required by this pipeline. (See `ep_converters/README.md` for detailed instructions on exporting and converting data from these systems).
+* `ep_converters/`: Contains subdirectories and scripts for converting data from various IOM formats (Surgical Studio, Cascade EDFs, EPWorks) into the foundational JSON structure required by this pipeline. (See [ep_converters/README.md](ep_converters/README.md) for detailed instructions on exporting and converting data from these systems).
 * `+sp/`: MATLAB package folder containing core processing functions for:
   * `standardise_modes.m`: Standardizing modes across participants.
   * `rejection.m`: Functions powering the trial/channel rejection UI.
@@ -103,7 +103,7 @@ Used by `run_sp_rejection.m` to specify targets for artifact rejection. Requires
    Run `set_env.m` to load these variables and configure paths.
 
 2. **Convert Raw Data:**
-   Follow instructions in `ep_converters/README.md` to export data from the IOM hardware (e.g., Surgical Studio) and augment it with necessary metadata (electrode level, laterality, approach, etc.).
+   Follow instructions in [ep_converters/README.md](ep_converters/README.md) to export data from the IOM hardware (e.g., Surgical Studio) and augment it with necessary metadata (electrode level, laterality, approach, etc.).
 
 3. **Standardize Data:**
    Once converted, open `run_sp_standardise_modes.m`. Update the participant mapping and participant ID to match your dataset, and run the script. This creates standardized `_data.mat` and `_info.mat` outputs in your preprocessing directory (`D_PROC`).
