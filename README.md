@@ -99,7 +99,7 @@ Used by `run_sp_rejection.m` to specify targets for artifact rejection. Requires
 ## Quick Start & General Workflow
 
 1. **Environment Setup:**
-   Ensure you have created an `env.json` in the repository root or parent directory to define necessary paths (e.g., `D_USER`, `D_PROC`, `D_DATA`). 
+   Ensure you have created an `env.json` in the repository root or parent directory to define necessary paths (e.g., `D_PROC`, `D_DATA`). 
    Run `set_env.m` to load these variables and configure paths.
 
 2. **Convert Raw Data:**

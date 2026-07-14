@@ -1,0 +1,65 @@
+institute = "NYP-Allen"
+main_targeted_side = "L"
+[peripheral_config]
+LM1ES1 = "LMedian"
+LM2ES1 = "RMedian"
+LM1ES2 = "LUlnar"
+LM2ES2 = "RUlnar"
+LM1ES3 = "LTibial"
+LM2ES3 = "RTibial"
+[sweep_info]
+[sweep_info.research_scs]
+# sweep = 15
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_scs_pairs]
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_paired_averaged]
+# sweep = 15
+sweep_delay = -2
+average_count = 5
+[sweep_info.research_paired_repeat]
+# sweep = 15
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_mep]
+# sweep = 15
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_multipulse]
+# sweep = 50
+sweep_delay = -0.5
+average_count = 1
+[sweep_info.research_dwave]
+# sweep = 3
+sweep_delay = -1
+average_count = 5
+[sweep_info.research_peripheral]
+# sweep = 15
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_pprobe]
+# sweep = 150
+sweep_delay = -0.5
+average_count = 1
+[sweep_info.research_scs_train]
+# sweep = 150
+sweep_delay = -2
+average_count = 1
+[sweep_info.research_lcswap]
+sweep_delay = -2
+average_count = 1
+[sweep_info.clinical_mep]
+# n.b. this is different at different institutions
+# it may even change within a case - would need to deal with that in exceptions file.
+# sweep = 15
+sweep_delay = 0
+average_count = 1
+[experimental_latencies]
+[experimental_latencies.central]
+# RADM = 8.5
+[experimental_latencies.sMEP]
+# RADM = 15
+[experimental_latencies.cMEP]
+# RADM = 25

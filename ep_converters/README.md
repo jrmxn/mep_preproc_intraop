@@ -29,14 +29,21 @@ TODO: Add summary.
 - Back up on Apricorn HDD (not USB) and AES-256 encrypted on secure cloud.
 - Ask for MRIs.
 
-## Export Methods
+## Surgical Studio (JSON) Workflow
 
-### Surgical Studio (JSON)
+This README is primarily focused on processing **Surgical Studio JSON exports**, which is the current preferred and standard method. The following is an example workflow for a specific participant (e.g., Participant 113):
 
-This is the preferred method now. The following is an example workflow for a specific participant (e.g., Participant 113) prepared by Noah Noah Willett.
-
-1. Create a new participant folder using the template.
-2. Export the `.json` file from Surgical Studio in the form of case data.
+1. Create a new participant folder within your `D_DATA` directory. The structure and naming convention must closely match the template provided in this repository under `ep_converters/surgical_studio/template_participant_folder/`. A completed structure looks like this:
+   ```text
+   [participant_prefix][participant_id]/
+   └── ephys/
+       └── cadwell-iomax/
+           ├── [participant_prefix][participant_id]_data.json
+           ├── [participant_prefix][participant_id]_events_augment.xlsx
+           └── [participant_prefix][participant_id]_properties.toml
+   ```
+   *Note: A properties TOML file (e.g., `scapptio113_properties.toml`) is required to exist here alongside the data. It contains crucial metadata like `sweep_info` and `peripheral_config`.*
+2. Export the main data `.json` file from Surgical Studio in the form of case data. Save it as `[participant_prefix][participant_id]_data.json` inside the `ephys/cadwell-iomax/` folder.
 3. In MATLAB, go to mep_preproc_intraop > ep_converters > Surgical studio > run_sp_surgical_studio_augment`.
 4. Run the script.
 5. Edit the configuration in Notepad or Notepad++ to match this structure (if needed):
@@ -50,7 +57,7 @@ This is the preferred method now. The following is an example workflow for a spe
                "overwrite": true,
                "participant_ix": [113],
                "participant_prefix": "scapptio",
-               "data_directory": "D_DATA_SCAP"
+               "data_directory": "D_DATA"
            }        
        ],
        "cfg": {
@@ -79,7 +86,7 @@ This is the preferred method now. The following is an example workflow for a spe
                 "overwrite": true,
                 "participant_ix": [113],
                 "participant_prefix": "scapptio",
-                "data_directory": "D_DATA_SCAP"
+                "data_directory": "D_DATA"
             }        
         ],
         "cfg": {
@@ -95,39 +102,6 @@ This is the preferred method now. The following is an example workflow for a spe
 14. Add the participant to the study list as directed (e.g., `scap 113 = 74`).
 15. Check the README.md one level up once the participant has been added to the study list.
 
-### Cascade and Surgical Studio data that was exported as EDF
-
-- Open Cascade Classic / Surgical Studio
-  - Export EDF+
-    - Add an empty file to the EDF directory called `cascade` or `iomax`.
-    - Add a file called `stim_delay.csv` that has the time until stim in a single record (e.g., `12ms` or `0ms`).
-  - Note down the laminectomy time.
-  - Export stacked EMG (under d-spinal view) [not for iomax].
-    - [and match `augmented.xlsx` structure]
-  - Export stacked d-waves.
-    - [and match `rc.json` structure from other subjects]
-  - Close Cascade Classic.
-- When you export the EDF, make sure that (2020-10-08 16:13):
-  - If it does not, you need to export stacked EMG again, but you have to disable the amplitude output and make it so that it's column-oriented.
-  - This data should go into `...\data_stacked_emg_without_amplitude\...` that way it should get picked up by `run_sp_edf2mat.m` and converted into something that looks like the EDF+D output (and used automatically).
-- Make a new folder `modik_` and set it in `dnc_set_env.m` (on all machines!), also change the name in encrypted `X:/` folder.
-- Run the first part of `run_sp_edf2mat` (i.e., `sp_cascade_edf2mat`).
-- Look in `data_deid_mat` folder for new patient ID (`P_...`).
-- OCR step to recover amplitude:
-  - Open Cascade Classic.
-  - On a copy to be deleted of the cascade file.
-  - Run `run_sp_get_stimamp_ocr` with this ID (follow instructions that get spit out when you run it).
-  - In the `data_cascade_event_ss` folder, convert write to augment file (manually, watch out for `O` -> `0`).
-  - *Note: the first decode is bad. This is by design.*
-- Go back to `run_sp_edf2mat`, and run `sp_augment_events` with write on.
-- In the `data_deid_mat` folder, convert `events_write` to `events_augment` (manually).
-- And `run_sp_edf2mat` with the augment flag.
-- Then run `run_sp_mat_aug_to_json`.
-
-### EPWorks (xltek)
-
-- Extract with `pyautogui` (see local readme/comments).
-- Run `run_sp_epworks`.
 
 ## Exception Files
 
@@ -214,3 +188,39 @@ Provides custom adjustments for the trigger delay (typically used for specific p
   }
 }
 ```
+
+## Legacy Export Methods
+
+### Cascade and Surgical Studio data that was exported as EDF
+
+- Open Cascade Classic / Surgical Studio
+  - Export EDF+
+    - Add an empty file to the EDF directory called `cascade` or `iomax`.
+    - Add a file called `stim_delay.csv` that has the time until stim in a single record (e.g., `12ms` or `0ms`).
+  - Note down the laminectomy time.
+  - Export stacked EMG (under d-spinal view) [not for iomax].
+    - [and match `augmented.xlsx` structure]
+  - Export stacked d-waves.
+    - [and match `rc.json` structure from other subjects]
+  - Close Cascade Classic.
+- When you export the EDF, make sure that (2020-10-08 16:13):
+  - If it does not, you need to export stacked EMG again, but you have to disable the amplitude output and make it so that it's column-oriented.
+  - This data should go into `...\data_stacked_emg_without_amplitude\...` that way it should get picked up by `run_sp_edf2mat.m` and converted into something that looks like the EDF+D output (and used automatically).
+- Make a new folder `modik_` and set it in `dnc_set_env.m` (on all machines!), also change the name in encrypted `X:/` folder.
+- Run the first part of `run_sp_edf2mat` (i.e., `sp_cascade_edf2mat`).
+- Look in `data_deid_mat` folder for new patient ID (`P_...`).
+- OCR step to recover amplitude:
+  - Open Cascade Classic.
+  - On a copy to be deleted of the cascade file.
+  - Run `run_sp_get_stimamp_ocr` with this ID (follow instructions that get spit out when you run it).
+  - In the `data_cascade_event_ss` folder, convert write to augment file (manually, watch out for `O` -> `0`).
+  - *Note: the first decode is bad. This is by design.*
+- Go back to `run_sp_edf2mat`, and run `sp_augment_events` with write on.
+- In the `data_deid_mat` folder, convert `events_write` to `events_augment` (manually).
+- And `run_sp_edf2mat` with the augment flag.
+- Then run `run_sp_mat_aug_to_json`.
+
+### EPWorks (xltek)
+
+- Extract with `pyautogui` (see local readme/comments).
+- Run `run_sp_epworks`.
