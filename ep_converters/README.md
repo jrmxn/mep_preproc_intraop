@@ -2,16 +2,6 @@
 
 **Author:** J R McIntosh
 
-## Summary
-
-TODO: Add summary.
-
-## Steps to Process Data
-
-1. The base data for everything is going to be a JSON file.
-2. The JSON file comes along with an info `.mat` file that has a table for each mode.
-3. In a `proc` folder, you write two `.mat` files: one info flattened, and one mode flattened.
-
 > **Note:** Surgical Studio is for JSON files only. `cascade_classic` handles both Surgical Studio and Cascade Classic EDF formats.
 
 ## Surgical Studio (JSON) Workflow
@@ -21,6 +11,7 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 1. Create a new participant folder within your `D_DATA` directory. The structure and naming convention must closely match the template provided in this repository under `ep_converters/surgical_studio/template_participant_folder/`. A completed structure looks like this:
    ```text
    [participant_prefix][participant_id]/
+   └── [unique_redcap_id]_[participant_prefix][participant_id]  # <- this is a file that links the two id types, it should have no content.
    └── ephys/
        └── cadwell-iomax/
            ├── [participant_prefix][participant_id]_data.json
@@ -31,7 +22,7 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 2. Export the main data `.json` file from Surgical Studio in the form of case data. Save it as `[participant_prefix][participant_id]_data.json` inside the `ephys/cadwell-iomax/` folder.
 3. In MATLAB, go to mep_preproc_intraop > ep_converters > Surgical studio > run_sp_surgical_studio_augment`.
 4. Run the script.
-5. Edit the configuration in Notepad or Notepad++ to match this structure (if needed):
+5. Edit the configuration in a text editor to match this structure (if needed):
 
    ```json
    {
@@ -56,7 +47,7 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 
 6. Run the script again.
 7. In File Explorer, navigate to: `your_exported_data_directory > scapptio113 > ephys > cadwell-iomax`.
-8. The file `scapptio113_events_write` will populate here. Rename it to `scapptio113_events_augment`. This is what MATLAB will load back in.
+8. The excel file `scapptio113_events_write` will populate here. Rename it to `scapptio113_events_augment`. This is what MATLAB will load back in.
 9. Open `scapptio113_events_augment` (it is an Excel file you will edit).
 10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Annotate the Excel file using the template. The template is structured such that the first column contains a description of a label that can be added to the spreadsheet. The subsequent columns correspond to the content that you should add in the respective columns of your augmented CSV/Excel file.
 11. (Optional) Create, edit, or delete the exceptions file (`scapptio113_exceptions.json`) in the same folder if any mode reassignments are necessary. See the [Exception Files](#exception-files) section below for formatting details.
