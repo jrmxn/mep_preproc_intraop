@@ -131,17 +131,22 @@ for ix_cell_sub = 1:length(cell_participant)
                     ephys.trials_flat{ix_row} = trial;
 
                     ds = [trial.Stimuli.DiscreteStimuli{:}];
+
+                    stim_name = arrayfun(@(ix) string(ds(ix).Name), 1:length(ds), 'UniformOutput', true);
+                    case_lcs = "Low Current Stimulator at Cortical Module" == stim_name;
+
                     if isfield(ds, 'SensedCurrent')
                         ds_current = [ds.SensedCurrent];
                     else
                         ds_current = arrayfun(@(i) ds(i).ElectricalPulses{1}.Intensity, 1:length(ds));
                     end
+                    ds_current = ds_current(case_lcs);
                     ds_current_average = mean(ds_current(ds_current > 1e-4));
                     info_flat.sc_current(ix_row) = ds_current_average;
 
                     if mode == "research_multipulse_brain"
-                        fprintf('Resume wokring here! for loading scap135')
-                        keyboard;
+                        % fprintf('Resume working here! for loading scap135')
+                        % keyboard;
                     end
                 end
 
