@@ -25,11 +25,33 @@
 {
   "PROJECT": "2024-01-00_human_scs_working",
   "D_PROC": "/path/to/proc",
+  "D_PARTICIPANT_MAPPING": "/path/to/participant_mapping_files",
   "D_REPORTS": "/path/to/reports",
-  "D_GIT_ROOT": "/path/to/gitprojects",
-  "D_GIT": "/path/to/gitprojects/human_escs_analysis",
+  "D_GIT": "/path/to/gitprojects/human_escs_analysis"
 }
 ```
+
+### Participant Mapping
+
+The `D_PARTICIPANT_MAPPING` path inside `env.json` (e.g., `/home/mcintosh/Cloud/DataPort/2024-01-00_human_scs_working/auxillary/participant_mapping/`) is used to store `.toml` files that assign original unique participant IDs to standardized study-specific IDs.
+
+The name of the `.toml` file is critically important. When using scripts like `load_data.m`, the string you provide for the `participant_mapping` parameter must exactly match the filename of your mapping file (without the extension). For example, providing `'participant_mapping', 'scap_study'` instructs the pipeline to load `scap_study.toml`.
+
+**Example structure of a mapping file (`scap_study.toml`):**
+```toml
+alias_modifier = "SCAP"
+reject_modes = ["research_scs", "research_mep", "research_paired_averaged", "research_paired_repeat"]
+
+[participant]
+cornptio024 = 1 # comments about the recording
+scapptio032 = 2 # e.g. SCAP with immediate check of effects...
+scapptio033 = 3 
+```
+
+- `alias_modifier`: String used as a prefix for the resulting analysis alias (e.g., "SCAP" + "1" -> "SCAP01").
+- `reject_modes`: An array specifying which modes should undergo artifact rejection checks.
+- `[participant]`: A block mapping the original subject IDs (like `cornptio024`) to a simplified study ID (`1`, `2`, `3`, etc.).
+
 * `load_data.m`: Core utility for loading processed data into workspace memory, providing flags to calculate AUC, apply regressed shock artifacts, and more.
 * `run_sp_standardise_modes.m`: Top-level script to invoke data standardization for specific cohorts or participants.
 * `run_an_experimental_time.m`: Script for producing experimental timeline summary plots.

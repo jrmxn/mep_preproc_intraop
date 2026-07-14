@@ -17,8 +17,8 @@ d.d_overwrite = struct;
 v = inputParserStructureOverwrite(v);
 
 %%
-p_par_list_json = fullfile(getenv('D_PROC'), 'auxillary', 'participant_mapping', sprintf('%s.json', v.participant_mapping));
-p_par_list_toml = fullfile(getenv('D_PROC'), 'auxillary', 'participant_mapping', sprintf('%s.toml', v.participant_mapping));
+p_par_list_json = fullfile(getenv('D_PARTICIPANT_MAPPING'), sprintf('%s.json', v.participant_mapping));
+p_par_list_toml = fullfile(getenv('D_PARTICIPANT_MAPPING'), sprintf('%s.toml', v.participant_mapping));
 if exist(p_par_list_json, 'file') == 2
     s_participant = loadjson(p_par_list_json);
 elseif exist(p_par_list_toml, 'file') == 2
@@ -138,6 +138,11 @@ for ix_cell_sub = 1:length(cell_participant)
                     end
                     ds_current_average = mean(ds_current(ds_current > 1e-4));
                     info_flat.sc_current(ix_row) = ds_current_average;
+
+                    if mode == "research_multipulse_brain"
+                        fprintf('Resume wokring here! for loading scap135')
+                        keyboard;
+                    end
                 end
 
                 if latch_trial

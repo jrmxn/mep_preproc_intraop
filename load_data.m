@@ -29,8 +29,8 @@ if v.minimal_processing
 end
 %%
 d_preproc = fullfile(getenv('D_PROC'), v.input_type);
-p_par_list_json = fullfile(getenv('D_PROC'), 'auxillary', 'participant_mapping', sprintf('%s.json', v.participant_mapping));
-p_par_list_toml = fullfile(getenv('D_PROC'), 'auxillary', 'participant_mapping', sprintf('%s.toml', v.participant_mapping));
+p_par_list_json = fullfile(getenv('D_PARTICIPANT_MAPPING'), sprintf('%s.json', v.participant_mapping));
+p_par_list_toml = fullfile(getenv('D_PARTICIPANT_MAPPING'), sprintf('%s.toml', v.participant_mapping));
 if exist(p_par_list_json, 'file') == 2
     s_participant = loadjson(p_par_list_json);
 elseif exist(p_par_list_toml, 'file') == 2

@@ -67,7 +67,8 @@ This is the preferred method now. The following is an example workflow for a spe
 8. The file `scapptio113_events_write` will populate here. Rename it to `scapptio113_events_augment`. This is what MATLAB will load back in.
 9. Open `scapptio113_events_augment` (it is an Excel file you will edit).
 10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Annotate the Excel file using the template.
-11. Change your configuration JSON to use the `"augment"` operation and save:
+11. (Optional) Create, edit, or delete the exceptions file (`scapptio113_exceptions.json`) in the same folder if any mode reassignments are necessary. See the [Exception Files](#exception-files) section below for formatting details.
+12. Change your configuration JSON to use the `"augment"` operation and save:
 
     ```json
     {
@@ -90,9 +91,9 @@ This is the preferred method now. The following is an example workflow for a spe
     }
     ```
 
-12. Close the Excel file and then run `run_sp_surgical_studio_augment.m` again.
-13. Add the participant to the study list as directed (e.g., `scap 113 = 74`).
-14. Check the README.md one level up once the participant has been added to the study list.
+13. Close the Excel file and then run `run_sp_surgical_studio_augment.m` again.
+14. Add the participant to the study list as directed (e.g., `scap 113 = 74`).
+15. Check the README.md one level up once the participant has been added to the study list.
 
 ### Cascade and Surgical Studio data that was exported as EDF
 
@@ -127,3 +128,89 @@ This is the preferred method now. The following is an example workflow for a spe
 
 - Extract with `pyautogui` (see local readme/comments).
 - Run `run_sp_epworks`.
+
+## Exception Files
+
+Exception files are currently used primarily for Surgical Studio JSON exports to handle necessary mode reassignments or data corrections before processing.
+
+The exception file should be named according to the participant prefix and ID, e.g., `<participant_prefix><participant_id>_exceptions.json` (such as `scapptio113_exceptions.json`). It should be placed in the same device directory as the data and events files (e.g., `.../ephys/cadwell-iomax/`).
+
+### Available Exception Types
+
+The JSON structure allows for several types of exceptions to handle various edge cases and data corrections:
+
+#### 1. `mode_reassign`
+Moves trials from one mode to another based on matching stimuli names. You can optionally delete the original mode entirely.
+```json
+{
+  "mode_reassign": {
+    "delete_original": "Name of the mode to delete entirely (optional)",
+    "from": "Source mode name to extract trials from",
+    "if_contains_stimuli": "Name of the stimuli to look for",
+    "to": "Destination mode name for the extracted trials"
+  }
+}
+```
+
+**Example:**
+If you need to reassign trials containing the stimuli `"Research D-Wave"` from a generic `"MEP"` mode to a new `"Research D-Wave"` mode, your exceptions file would look like this:
+```json
+{
+  "mode_reassign": {
+    "from": "MEP",
+    "if_contains_stimuli": "Research D-Wave",
+    "to": "Research D-Wave"
+  }
+}
+```
+
+#### 2. `channel_reassign`
+Renames channels. You can optionally provide `channel_reassign_after` (a time string, e.g., `"10:00:00"`) to only rename channels after a specific time on the recording day. Space characters in original names should be preserved.
+```json
+{
+  "channel_reassign_after": "10:00:00",
+  "channel_reassign": {
+    "OldChannelName": "NewChannelName",
+    "Old Channel_0x20_Name": "NewChannelName"
+  }
+}
+```
+
+#### 3. `invert_cortical_stimulation`
+A boolean flag (`true`/`false`). If set to true, flips the annotated side of cortical stimulation (e.g., Left becomes Right) and swaps the anode/cathode mappings for the outputs.
+```json
+{
+  "invert_cortical_stimulation": true
+}
+```
+
+#### 4. `tes_is_hardware_quad`
+A boolean flag (`true`/`false`). Used when a hardware splitter was utilized for quad stimulation instead of configuring it in the IOMAX software. It overrides software "bipolar" settings to "quad" and injects the additional hardware outputs (`H3`, `H4`) into the trace data.
+```json
+{
+  "tes_is_hardware_quad": true
+}
+```
+
+#### 5. `sweep`
+Corrects erroneous sweep parameters setup during early digitimer usage (specifically for `research_paired_repeat_trigger`). 
+```json
+{
+  "sweep": {
+    "research_paired_repeat_trigger": {
+      "sweep": 50,
+      "sweep_delay": 5
+    }
+  }
+}
+```
+
+#### 6. `DataSweepTriggerDelayCustom`
+Provides custom adjustments for the trigger delay (typically used for specific participant edge cases like `cdmrp003`). Handled internally by auxiliary functions.
+```json
+{
+  "DataSweepTriggerDelayCustom": {
+    "...": "..."
+  }
+}
+```
