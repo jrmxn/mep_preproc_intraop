@@ -1,6 +1,5 @@
 clearvars -except rapid_info rapid_ephys rapid_v;
 set_env;
-% addpath(fullfile(getenvc('D_GIT'), 'intraop_preproc'));
 addpath(fullfile(getenvc('D_GIT'), 'run_cfg'));
 
 % d_data_mat_aug = fullfile(getenvc('D_DATA_MAT'), 'mat_files_aug');

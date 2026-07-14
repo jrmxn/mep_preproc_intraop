@@ -2,7 +2,6 @@ addpath(fullfile('..', '..', '..'));
 
 set_env;
 clearvars;
-addpath(fullfile(getenvc('D_GIT'), 'intraop_preproc'));
 d_data_coded = fullfile(getenvc('D_DATA_MAPPING'));
 overwrite = false;
 %%

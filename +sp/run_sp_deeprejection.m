@@ -1,9 +1,6 @@
 clearvars -except rapid_info rapid_ephys rapid_v;
 addpath('..');
 set_env;
-addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
-addpath(fullfile(getenv('D_GIT'), 'an_proc'));
-addpath(fullfile(getenv('D_GIT'), 'an_plot'));
 % p_data_rejection = fullfile(getenvc('D_DATA'), 'proc_records', 'T_rejected');
 
 close all;

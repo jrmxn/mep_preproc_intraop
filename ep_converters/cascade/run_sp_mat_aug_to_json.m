@@ -2,7 +2,6 @@ addpath(fullfile('..', '..', '..'));
 addpath('..');
 set_env;
 clearvars;
-addpath(fullfile(getenvc('D_GIT'), 'intraop_preproc'));
 project = getenvc('PROJECT');
 
 overwrite = true;

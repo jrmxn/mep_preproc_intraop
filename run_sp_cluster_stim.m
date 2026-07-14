@@ -2,8 +2,6 @@
 clear;
 addpath('..');
 set_env;
-addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
-addpath(fullfile(getenv('D_GIT'), 'an_proc'));
 
 % p_data_rejection = fullfile(getenvc('D_DATA'), 'proc_records', 'T_rejected');
 

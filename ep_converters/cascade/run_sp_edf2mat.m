@@ -1,7 +1,6 @@
 addpath(fullfile('..', '..', '..'));
 set_env;
 clearvars;
-addpath(fullfile(getenvc('D_GIT'), 'intraop_preproc'));
 project = getenvc('PROJECT');
 d_data_noncoded = fullfile(getenvc('D_DATA_MAPPING_SECURE'), 'data_non-coded');
 d_data_coded = fullfile(getenvc('D_DATA_MAPPING'));

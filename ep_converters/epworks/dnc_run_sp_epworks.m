@@ -2,7 +2,6 @@ clear;
 addpath('..');
 addpath(fullfile('..', '..', '..'));
 set_env;
-% addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
 overwrite = true;  % !!!
 % vec_participant = "scapptio001"; plot_shock_channel = nan;
 % vec_participant = "scapptio003"; plot_shock_channel = nan;  %10;  % or 7

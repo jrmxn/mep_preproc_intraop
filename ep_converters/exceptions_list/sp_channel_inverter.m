@@ -1,9 +1,6 @@
 clearvars -except rapid_info rapid_ephys rapid_v;
 addpath('..');
 set_env;
-% addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
-% addpath(fullfile(getenv('D_GIT'), 'an_proc'));
-% addpath(fullfile(getenv('D_GIT'), 'an_plot'));
 %
 %%
 v.participant_mapping = 'mapping_all_study';  % update this to 'injury_study' in future

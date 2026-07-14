@@ -1,7 +1,6 @@
 clearvars -except rapid_info rapid_ephys rapid_v;
 addpath('..');
 set_env;
-% addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
 addpath(fullfile(getenvc('D_GIT'), 'run_cfg'));
 
 % pne_data_merged = fullfile(getenvc('D_DATA'), 'proc_records', 'T_merged');

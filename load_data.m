@@ -1,7 +1,6 @@
 function [vec_participant, info, ephys, v, vec_alias] = load_data(varargin)
 % p_ = mfilename('fullpath');
 % p_ = fileparts(p_);
-% addpath(fullfile(p_, 'intraop_preproc'));
 d.participant = [];
 d.participant_exclude = [];
 d.t_min = 7e-3;

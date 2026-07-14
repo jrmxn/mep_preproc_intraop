@@ -66,7 +66,7 @@ This is the preferred method now. The following is an example workflow for a spe
 7. In File Explorer, navigate to: `your_exported_data_directory > scapptio113 > ephys > cadwell-iomax`.
 8. The file `scapptio113_events_write` will populate here. Rename it to `scapptio113_events_augment`. This is what MATLAB will load back in.
 9. Open `scapptio113_events_augment` (it is an Excel file you will edit).
-10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Annotate the Excel file using the template.
+10. Add in the level, laterality, electrode type, orientation, stimulation type, and approach. Annotate the Excel file using the template. The template is structured such that the first column contains a description of a label that can be added to the spreadsheet. The subsequent columns correspond to the content that you should add in the respective columns of your augmented CSV/Excel file.
 11. (Optional) Create, edit, or delete the exceptions file (`scapptio113_exceptions.json`) in the same folder if any mode reassignments are necessary. See the [Exception Files](#exception-files) section below for formatting details.
 12. Change your configuration JSON to use the `"augment"` operation and save:
 

@@ -2,9 +2,6 @@ clear;
 addpath('..');
 addpath(fullfile('..', '..', '..'));
 set_env;
-% addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
-% addpath(fullfile(getenv('D_GIT'), 'an_proc'));
-% addpath(fullfile(getenv('D_GIT'), 'an_plot'));
 
 participant = 'subxy'; plot_shock_channel = nan;
 

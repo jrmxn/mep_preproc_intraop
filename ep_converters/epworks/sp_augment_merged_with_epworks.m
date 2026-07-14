@@ -3,9 +3,6 @@
 clear;
 addpath(fullfile('..', '..', '..'));
 set_env;
-addpath(fullfile(getenv('D_GIT'), 'intraop_preproc'));
-addpath(fullfile(getenv('D_GIT'), 'an_proc'));
-addpath(fullfile(getenv('D_GIT'), 'an_plot'));
 
 p_merged = fullfile(getenvc('D_DATA'), 'proc_records', 'T_merged');
 p_merged_augmented = fullfile(getenvc('D_DATA'), 'proc_records', 'T_merged_augmented');
