@@ -87,18 +87,18 @@ When editing the `[participant]_events_augment.xlsx` file in step 10, fill in sp
 
 | Description | `set_sequence` | `set_group` | `cx_pct` | `sc_pct` | `moi` | `muscle_targeted` |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Standard paired average** | `pa-001` | `Gpa-001` | `110` | `110` | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `ECR` |
-| **Pairing** | | | (use `-1` if unknown) | (use `-1` if unknown) | | |
-| **Ramp** | `scap_pre-001` | `gscap-001` | `110` | `90` | | |
-| **Multipulse** | `scap-001` | | (or `-1` if sub-cx) | (or `110`, `-1`, etc.) | | |
-| **Peripheral pairing average to median** | `scap_post-001` | | | | | |
-| **To ulnar** | `cxramp-001` | `gcxramp-001` | `-1` | `110` | | |
-| **Peripheral (for CDMRP)** | | (if ramping brain) | | | | |
-| **Probe** | `e.g. M04N` | | | | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `APB` |
+| **Standard paired average** | `pa-001` | `Gpa-001` | `110, (if unknown, set to -1)` | `110, (if unknown, set to -1)` | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `ECR` |
+| **Pairing** | `e.g. scap_pre-001, e.g. scap-001, e.g. scap_post-001` | `gscap-001` | `110, (or -1 e.g. if intervention is sub cx)` | `90, (or 110, or -1 etc)` | | |
+| **Ramp** | `cxramp-001` | `gcxramp-001` | `e.g. -1 (if ramping brain)` | `110` | | |
+| **Multipulse** | `-not sure what this convention is-` | `-should search the folders for 'multipulse' or 'multi pulse' (but n.b. it's in xlsx files)` | | | `["Triceps", "Biceps", "ECR", "FCR", "APB", "ADM"]` | `APB` |
+| **Peripheral pairing average to median** | `pma-001` | `gpma-001` | `110` | `90` | | |
+| **To ulnar** | `pmu-001` | | | | | |
+| **Peripheral (for CDMRP)** | | `peripheral` | | | | |
+| **Probe** | `probe` | `spatial` | | | | |
 | **Spatial CDMRP condition** | `e.g. M04N` | `spatial` | | | | |
-| **Frequency CDMRP condition** | `pma-001` or `e.g. B03F01` | `gpma-001` or `frequency` | `110` | `90` | | |
-| **Pulsewidth CDMRP condition** | `pmu-001` or `e.g. B03PW01` | `pulsewidth` | | | | |
-| **X-Ray** | | `xray` | | | | |
+| **Frequency CDMRP condition** | `e.g. B03PO02, e.g. B03F01` | `frequency` | | | | |
+| **Pulsewidth CDMRP conditon** | `e.g. B03PW01` | `pulsewidth` | | | | |
+| **xray** | | `xray` | | | | |
 
 ## Exception Files
 
