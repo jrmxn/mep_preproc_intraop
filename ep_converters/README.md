@@ -14,21 +14,6 @@ TODO: Add summary.
 
 > **Note:** Surgical Studio is for JSON files only. `cascade_classic` handles both Surgical Studio and Cascade Classic EDF formats.
 
-## General Workflow
-
-- Copy over:
-  - Data to `raw` and `raw_backup`
-  - Audio
-  - Zeiss
-  - Partial RTF contents to EN
-- Do one of the export steps below.
-- **Legacy / Unsure Steps:**
-  - `run_sp_merge_subjects` <--- NOT ANYMORE
-  - `run_sp_rejection` - (actually do it!)
-  - `run_sp_cluster_stim` <--- NOT ANYMORE
-- Back up on Apricorn HDD (not USB) and AES-256 encrypted on secure cloud.
-- Ask for MRIs.
-
 ## Surgical Studio (JSON) Workflow
 
 This README is primarily focused on processing **Surgical Studio JSON exports**, which is the current preferred and standard method. The following is an example workflow for a specific participant (e.g., Participant 113):
