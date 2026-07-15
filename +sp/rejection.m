@@ -227,6 +227,11 @@ while ix_outer <= length(cell_outer)
                 h_dropdown.String = slider_type_options;
                 h_dropdown.Value = find(strcmpi(slider_type_options, SLIDER_OPT.type));
                 SLIDER_OPT.switch = false;
+                
+                h_override_label = uicontrol(h_f, 'Style', 'text', 'Position', [25 130 150 20], ...
+                    'String', 'Set All Thresholds:');
+                h_override = uicontrol(h_f, 'Style', 'edit', 'Position', [25 105 150 25], ...
+                    'String', '', 'Callback', @override_callback);
             end
         end
 
@@ -289,7 +294,7 @@ while ix_outer <= length(cell_outer)
                 if strcmpi(v.reject_mode, 'reject_lines')
                     p3 = [p(1)+p(3), p(2)+p(4)+0.005, 0.04, 0.025];
                     hEdit = uicontrol(h_f, 'Style', 'edit', 'Units', 'normalized', 'Position', p3, ...
-                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)));
+                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)), 'Tag', 'indiv_edit');
 
                     HSLIDER.(str_inner) = uicontrol( h_f, 'Style', 'slider', ...
                         'Units', 'normalized', 'Position', p2, 'Min', SLIDER_OPT.min, 'Max', SLIDER_OPT.max, ...
@@ -314,7 +319,7 @@ while ix_outer <= length(cell_outer)
                 if strcmpi(v.reject_mode, 'reject_heatmap')
                     p3 = [p(1)+p(3), p(2)+p(4)+0.005, 0.04, 0.025];
                     hEdit = uicontrol(h_f, 'Style', 'edit', 'Units', 'normalized', 'Position', p3, ...
-                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)));
+                        'String', sprintf('%0.3f', p_rej.(SLIDER_OPT.type)), 'Tag', 'indiv_edit');
 
                     HSLIDER.(str_inner) = uicontrol( h_f, 'Style', 'slider', ...
                         'Units', 'normalized', 'Position', p2, 'Min', SLIDER_OPT.min, 'Max', SLIDER_OPT.max, ...
@@ -729,4 +734,19 @@ for ix_sub = 1:length(sub)
 end
 fprintf('Average rejection based on fraction_pc_error is %0.1f%%\n', ...
     100*mean(cellfun(@(x) mean(x), cell_param)));
+end
+
+function override_callback(src, ~)
+    val = str2double(src.String);
+    if isnan(val)
+        return;
+    end
+    h_edits = findobj(src.Parent, 'Tag', 'indiv_edit');
+    for ix = 1:length(h_edits)
+        h_edits(ix).String = src.String;
+        f = h_edits(ix).Callback;
+        if isa(f, 'function_handle')
+            f(h_edits(ix), []);
+        end
+    end
 end
