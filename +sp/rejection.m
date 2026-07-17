@@ -150,6 +150,52 @@ else
 end
 
 %%
+if strcmpi(v.reject_mode, 'reject_individuals')
+    sub_safe = matlab.lang.makeValidName(participant);
+    fprintf('\n--- REJECT INDIVIDUALS: %s ---\n', participant);
+    
+    p_rej_manual = fullfile(d_preproc_parameters, sprintf('%s_manual_rejections.json', participant));
+    if exist(p_rej_manual, 'file') == 2
+        MANUAL_REJ_STRUCT = loadjson(p_rej_manual);
+        MANUAL_REJ_STRUCT = MANUAL_REJ_STRUCT.MANUAL_REJ_STRUCT;
+    else
+        MANUAL_REJ_STRUCT = struct;
+    end
+    
+    def_all = '';
+    def_spec = '';
+    if isfield(MANUAL_REJ_STRUCT, sub_safe)
+        if isfield(MANUAL_REJ_STRUCT.(sub_safe), 'manual_reject_all')
+            if ischar(MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all) || isstring(MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all)
+                def_all = char(MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all);
+            else
+                def_all = mat2str(MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all);
+            end
+        end
+        if isfield(MANUAL_REJ_STRUCT.(sub_safe), 'manual_reject_specific')
+            def_spec = MANUAL_REJ_STRUCT.(sub_safe).manual_reject_specific;
+        end
+    end
+    
+    fprintf('Current ALL muscles rejections: %s\n', def_all);
+    ans_all = input('Enter new trials to reject for ALL muscles (e.g. 1:100, 125:end) or press enter to keep: ', 's');
+    if not(isempty(ans_all))
+        MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all = ans_all;
+    end
+    
+    avail_muscles = strjoin(cell_ch_muscle, ', ');
+    fprintf('\nAvailable muscles: %s\n', avail_muscles);
+    fprintf('Current SPECIFIC muscles rejections: %s\n', def_spec);
+    ans_spec = input('Enter new trials for SPECIFIC muscles (e.g. LBiceps: 1023; RTA: 5,8; LADM: 25:end) or press enter to keep: ', 's');
+    if not(isempty(ans_spec))
+        MANUAL_REJ_STRUCT.(sub_safe).manual_reject_specific = ans_spec;
+    end
+    
+    savejson('MANUAL_REJ_STRUCT', MANUAL_REJ_STRUCT, p_rej_manual);
+    fprintf('Saved global manual rejections for %s.\n\n', participant);
+    return;
+end
+
 % only used if v.apply_bandstop
 d_bandstop = designfilt('bandstopiir','FilterOrder',6, ...
     'HalfPowerFrequency1',58,'HalfPowerFrequency2',62, ...
@@ -388,6 +434,46 @@ end
 
 
 if strcmpi(v.reject_mode, 'update_table')
+    sub_safe = matlab.lang.makeValidName(participant);
+    p_rej_manual = fullfile(d_preproc_parameters, sprintf('%s_manual_rejections.json', participant));
+    if exist(p_rej_manual, 'file') == 2
+        MANUAL_REJ_STRUCT = loadjson(p_rej_manual);
+        MANUAL_REJ_STRUCT = MANUAL_REJ_STRUCT.MANUAL_REJ_STRUCT;
+        if isfield(MANUAL_REJ_STRUCT, sub_safe)
+            if isfield(MANUAL_REJ_STRUCT.(sub_safe), 'manual_reject_all')
+                idx_all_str = MANUAL_REJ_STRUCT.(sub_safe).manual_reject_all;
+                if ~ischar(idx_all_str) && ~isstring(idx_all_str)
+                    idx_all_str = mat2str(idx_all_str);
+                end
+                idx_all_str = strrep(char(idx_all_str), 'end', num2str(height(info_auxf)));
+                idx_all = str2num(idx_all_str);
+                if not(isempty(idx_all))
+                    info_auxf.(str_reject)(idx_all, :) = true;
+                end
+            end
+            if isfield(MANUAL_REJ_STRUCT.(sub_safe), 'manual_reject_specific')
+                str_spec = MANUAL_REJ_STRUCT.(sub_safe).manual_reject_specific;
+                if not(isempty(str_spec))
+                    parts = strsplit(str_spec, ';');
+                    for ix_p = 1:length(parts)
+                        subparts = strsplit(parts{ix_p}, ':');
+                        if length(subparts) >= 2
+                            musc = strtrim(subparts{1});
+                            idx_str = strtrim(strjoin(subparts(2:end), ':'));
+                            idx_str = strrep(idx_str, 'end', num2str(height(info_auxf)));
+                            idx_spec = str2num(idx_str);
+                            if not(isempty(idx_spec))
+                                case_ch = strcmpi(vec_ch, musc);
+                                if any(case_ch)
+                                    info_auxf.(str_reject)(idx_spec, case_ch) = true;
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
     modify_auxf(participant, 'info_auxf', info_auxf, 'mode', 'save');
 end
 REJ_STRUCT_info(REJ_STRUCT);
@@ -722,6 +808,9 @@ for ix_sub = 1:length(sub)
     cell_param{ix_sub} = [];
     for ix_mus = 1:length(mus)
         REJ_STRUCT_sub_mus = REJ_STRUCT.(sub{ix_sub}).(mus{ix_mus});
+        if ~isstruct(REJ_STRUCT_sub_mus)
+            continue;
+        end
         loc = fieldnames(REJ_STRUCT_sub_mus);
         for ix_loc = 1:length(loc)
             specific_param = 'fraction_pc_error';
