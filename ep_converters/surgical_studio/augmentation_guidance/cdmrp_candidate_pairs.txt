@@ -1,0 +1,113 @@
+, catheter_moved
+, neck_extension
+, closing
+, frequency
+, multipulse
+, peripheral
+, pulsewidth
+, spatial
+, xray
+
+B01R-F01, frequency
+B01R-F02, frequency
+B01R-F03, frequency
+B01R-F04, frequency
+B01R-F05, frequency
+
+B01R-PO01, frequency
+B01R-PO02, frequency
+B01R-PO03, frequency
+B01R-PO04, frequency
+
+B03R-PW01, pulsewidth
+B03R-PW02, pulsewidth
+B03R-PW03, pulsewidth
+B03R-PW04, pulsewidth
+B03R-PW05, pulsewidth
+
+B01R-PW01, pulsewidth
+B01R-PW02, pulsewidth
+B01R-PW03, pulsewidth
+B01R-PW04, pulsewidth
+
+B03R-CT01-0.5, frequency
+B03R-CT01-2, frequency
+B03R-CT02-0.5, frequency
+B03R-CT02-2, frequency
+B03R-CT03-0.5, frequency
+B03R-CT03-2, frequency
+B03R-CT04-0.5, frequency
+B03R-CT04-2, frequency
+B03R-CT05-0.5, frequency
+B03R-CT05-2, frequency
+B03R-CT10-0.5, frequency
+B03R-CT10-2, frequency
+B03R-CT10-3, frequency
+
+B02R-F01, frequency
+B02R-F02, frequency
+B02R-F03, frequency
+B02R-F04, frequency
+B02R-F05, frequency
+
+B03R-F01, frequency
+B03R-F02, frequency
+B03R-F03, frequency
+B03R-F04, frequency
+B03R-F05, frequency
+
+B03R-PO01, frequency
+B03R-PO02, frequency
+B03R-PO03, frequency
+B03R-PO04, frequency
+
+HHM01N-OFF-C4, spatial
+HHM01N-OFF-C5, spatial
+HHM01N-ST-C4, spatial
+HHM01N-ST-C5, spatial
+HHM01R-ON-C4, spatial
+HHM01R-ON-C5, spatial
+HHM01R-ST-C4, spatial
+HHM01R-ST-C5, spatial
+HHM01N-ON-C5, spatial
+HHM01R-OFF-C5, spatial
+HHM01N-ON-C6, spatial
+HHM01R-OFF-C6, spatial
+
+B01R, spatial
+B02R, spatial
+B03R, spatial
+
+B01N, spatial
+B03N, spatial
+
+M01N, spatial
+M01R, spatial
+M02N, spatial
+M02R, spatial
+M03N, spatial
+M03R, spatial
+M04N, spatial
+M04R, spatial
+M05N, spatial
+M05R, spatial
+M06N, spatial
+M06R, spatial
+M07N, spatial
+M07R, spatial
+M08N, spatial
+M08R, spatial
+M09N, spatial
+M09R, spatial
+M10N, spatial
+M10R, spatial
+
+probe, spatial
+
+B01R-F01-ALT1, frequency
+B01R-F01-ALT2, frequency
+M02N-ALT1, spatial
+M02R-ALT1, spatial
+M03N-ALT1, spatial
+M03R-ALT1, spatial
+B03R-PO01-ALT, frequency

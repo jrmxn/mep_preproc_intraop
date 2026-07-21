@@ -84,6 +84,7 @@ This README is primarily focused on processing **Surgical Studio JSON exports**,
 When editing the `[participant]_events_augment.xlsx` file in step 10, fill in specific columns based on the type of data or experimental condition. The table below outlines the types of conditions (Description) and what you should put into the corresponding columns (`set_sequence`, `set_group`, `cx_pct`, `sc_pct`, `moi`, and `muscle_targeted`). 
 
 *Note: If `cx_pct` (cortical percentage) or `sc_pct` (spinal cord percentage) are unknown for a given row, you can set them to `-1`.*
+*Note: for CDMRP I have some of the candidate pairs here: /surgical_studio/augmentation_guidance/cdmrp_candidate_pairs.txt
 
 | Description | `set_sequence` | `set_group` | `cx_pct` | `sc_pct` | `moi` | `muscle_targeted` |
 | --- | --- | --- | --- | --- | --- | --- |
