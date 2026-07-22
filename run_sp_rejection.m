@@ -24,6 +24,7 @@ rejection_summary = false;
 if not(rejection_summary)
     for ix_particpant = 1:length(vec_participant)
         participant = vec_participant(ix_particpant);
+        disp(participant);
         %% manually reject individual trials:
         reject_mode = 'reject_individuals';
         if any(strcmpi(config_struct.reject_mode, reject_mode))

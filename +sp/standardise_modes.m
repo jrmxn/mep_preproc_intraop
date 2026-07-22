@@ -31,6 +31,9 @@ cell_participant = cell_participant(:).';
 if not(isempty(v.participant))
     cell_participant = intersect(v.participant, cell_participant);
 end
+if isempty(cell_participant)
+    fprintf('Participant/s not in set.\n')
+end
 
 %%
 proto_muscle_set = ["Trapezius", "Deltoid", "Biceps", "Triceps", "ECR", "FCR", "APB", "ADM", "TA", "EDB", "AH"];
