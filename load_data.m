@@ -282,7 +282,7 @@ elseif v.output_type == "individual"
     info = info_sub;
     ephys = ephys_sub;
 elseif v.output_type == "individual_single"
-    assert(length(cell_participant)==1, 'Asked for single participant output, but did not filter participants.');
+    assert(length(cell_participant)>0, 'Asked for single participant output, but there were 0 matches to the requested participant.');
     assert(length(vec_participant)==1, 'Asked for single participant output, but did not filter participants.');
     info = info_sub{1};
     ephys = ephys_sub{1};

@@ -47,11 +47,15 @@ if not(rejection_summary)
             end
 
             %% apply configuration into table
-            reject_mode = 'update_table';
-            if any(strcmpi(config_struct.reject_mode, reject_mode))
-                sp.rejection(participant, ...
-                    'ephys_mode', ephys_mode, 'fs_lowpass', fs_lowpass, ...
-                    'reject_mode', reject_mode, 'participant_mapping', participant_mapping, 'overwrite', true);
+            try
+                reject_mode = 'update_table';
+                if any(strcmpi(config_struct.reject_mode, reject_mode))
+                    sp.rejection(participant, ...
+                        'ephys_mode', ephys_mode, 'fs_lowpass', fs_lowpass, ...
+                        'reject_mode', reject_mode, 'participant_mapping', participant_mapping, 'overwrite', true);
+                end
+            catch ME
+                warning(ME.identifier, '%s', ME.message);
             end
 
             %%
